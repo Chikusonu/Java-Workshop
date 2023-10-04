@@ -1,0 +1,84 @@
+package bank_system_case_study;
+
+import java.sql.ResultSet;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.Scanner;
+
+public class BankSystem {
+
+    public static void main(String[] args) {
+        try {
+            // Establish a connection to the database
+            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost/bank_system", "root", "root");
+
+            Scanner sc = new Scanner(System.in);
+            
+            System.out.println("Administration Login");
+            System.out.println("Create Customer ");
+            System.out.println("Display Customer Details");
+            System.out.println("Enter the Choice");
+            int choice = sc.nextInt();
+
+            int accno = 0; // Declare the variables outside the switch
+            String accname = "";
+
+            switch (choice) {
+                case 1:
+                    // Create Customer Account Panel
+                    System.out.println("---***Create Customer Account Panel***---");
+                    System.out.println("Enter Customer Details");
+                    accno = sc.nextInt(); // Reuse the variables
+                    accname = sc.next();
+                    double accbalance = sc.nextDouble();
+
+                    // ... rest of the code ...
+
+                case 2:
+                    // Display Customer Display Panel
+                    System.out.println("---***Display Customer Display Panel***---");
+                    System.out.println("Enter the Customer Account Number");
+                    accno = sc.nextInt(); // Reuse the variables
+                    accname = sc.next();
+
+                    // ... rest of the code ...
+
+                case 3:
+                    // Update Customer Details
+                    System.out.println("---*** Update Customer Details ***---");
+                    System.out.println("Enter The Account Number");
+                    int accnoUpdate = sc.nextInt();
+                    System.out.println("Enter The Customer Account holder Name For Updation");
+                    String accnameUpdate = sc.next();
+                    String updateQuery = "UPDATE banksystem SET acc_name = ? WHERE acc_no = ?";
+                    PreparedStatement pstmtUpdate = conn.prepareStatement(updateQuery);
+                    pstmtUpdate.setString(1, accnameUpdate);
+                    pstmtUpdate.setInt(2, accnoUpdate);
+                    int rowsAffectedUpdate = pstmtUpdate.executeUpdate();
+
+                    if (rowsAffectedUpdate > 0) {
+                        System.out.println("Data Update successfully!");
+                    } else {
+                        System.out.println("Data Update failed.");
+                    }
+                    break;
+
+                case 4:
+                    // Other options
+                    System.out.println("---*** Other Options ***---");
+                    break;
+
+                default:
+                    System.out.println("Invalid choice.");
+                    break;
+            }
+
+            // Close the connection
+            conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+}

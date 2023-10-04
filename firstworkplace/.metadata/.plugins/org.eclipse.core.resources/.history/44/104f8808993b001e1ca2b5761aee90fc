@@ -1,0 +1,140 @@
+package bank_system_case_study;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.Scanner;
+
+public class customer {
+
+    public static void main(String[] args) {
+        try {
+            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost/bank_system", "root", "root");
+            Scanner sc = new Scanner(System.in);
+
+            while (true) {
+                System.out.println("Administration Login");
+                System.out.println("1. Deposit ");
+                System.out.println("2. Withdraw");
+                System.out.println("3. Mini Transaction");
+                // ... other options ...
+                System.out.println("6. Exit");
+                System.out.println("Enter the Choice");
+                int choice = sc.nextInt();
+
+                int accno;
+                String accname;
+                double accdepo;
+                double account_balance = 0;
+                int rowsAffectedUpdate = 0;
+
+                switch (choice) {
+                    case 1:
+                        System.out.println("---***Customer Deposit Panel***---");
+                        System.out.println("Enter the Account Number");
+                        accno = sc.nextInt();
+                        String nameQuery = "SELECT * FROM banksystem WHERE acc_no = ?";
+                        PreparedStatement nameStmt = conn.prepareStatement(nameQuery);
+                        nameStmt.setInt(1, accno);
+                        ResultSet resultSet = nameStmt.executeQuery();
+
+                        while (resultSet.next()) {
+                            String account_name = resultSet.getString("acc_name");
+                            account_balance = resultSet.getDouble("acc_balance");
+                            System.out.println("Hello " + account_name + " Enter the Deposit Amount");
+                        }
+
+                        accdepo = sc.nextDouble();
+                        double updatedBalanceDepo = account_balance + accdepo;
+
+                        String depositQuery = "UPDATE banksystem SET acc_balance=? WHERE acc_no=?";
+                        PreparedStatement depositStmt = conn.prepareStatement(depositQuery);
+                        depositStmt.setDouble(1, updatedBalanceDepo);
+                        depositStmt.setInt(2, accno);
+                        rowsAffectedUpdate = depositStmt.executeUpdate();
+
+                        if (rowsAffectedUpdate > 0) {
+                            System.out.println("Deposited successfully! Rows affected: " + rowsAffectedUpdate);
+                        } else {
+                            System.out.println("Deposit failed. Rows affected: " + rowsAffectedUpdate);
+                        }
+                        break;
+
+                    case 2:
+                        System.out.println("---***Customer Withdrawal Panel***---");
+                        System.out.println("Enter the Account Number");
+                        accno = sc.nextInt();
+                        nameQuery = "SELECT * FROM banksystem WHERE acc_no = ?";
+                        PreparedStatement nameStmt1 = conn.prepareStatement(nameQuery);
+                        nameStmt1.setInt(1, accno);
+                        resultSet = nameStmt1.executeQuery();
+
+                        while (resultSet.next()) {
+                            String account_name = resultSet.getString("acc_name");
+                            account_balance = resultSet.getDouble("acc_balance");
+                            System.out.println("Hello " + account_name + " Enter the Withdrawal Amount");
+                        }
+
+                        accdepo = sc.nextDouble();
+                        double updatedBalanceWithdrawal = account_balance - accdepo;
+
+                        String withdrawalQuery = "UPDATE banksystem SET acc_balance=? WHERE acc_no=?";
+                        PreparedStatement withdrawalStmt = conn.prepareStatement(withdrawalQuery);
+                        withdrawalStmt.setDouble(1, updatedBalanceWithdrawal);
+                        withdrawalStmt.setInt(2, accno);
+                        rowsAffectedUpdate = withdrawalStmt.executeUpdate();
+
+                        if (rowsAffectedUpdate > 0) {
+                            System.out.println("Withdrawal successfully! Rows affected: " + rowsAffectedUpdate);
+                        } else {
+                            System.out.println("Withdrawal failed. Rows affected: " + rowsAffectedUpdate);
+                        }
+                        break;
+
+                     // ... Existing code ...
+
+                    case 3:
+                        System.out.println("---*** Mini Statement Panel ***---");
+                        System.out.println("Enter the Account Number");
+                        accno = sc.nextInt();
+                        
+                        String miniStatementQuery = "SELECT * FROM transactions WHERE acc_no = ? ORDER BY transaction_datetime DESC LIMIT 5";
+                        PreparedStatement miniStmt = conn.prepareStatement(miniStatementQuery);
+                        miniStmt.setInt(1, accno);
+                        
+                        ResultSet miniResultSet = miniStmt.executeQuery();
+                        
+                        System.out.println("Mini Statement:");
+                        System.out.println("----------------");
+                        while (miniResultSet.next()) {
+                            String transaction_type = miniResultSet.getString("transaction_type");
+                            double transaction_amount = miniResultSet.getDouble("transaction_amount");
+                            String transaction_datetime = miniResultSet.getString("transaction_datetime");
+                            System.out.println("Transaction Type: " + transaction_type);
+                            System.out.println("Transaction Amount: " + transaction_amount);
+                            System.out.println("Transaction Date and Time: " + transaction_datetime);
+                            System.out.println("----------------");
+                        }
+                        break;
+
+                    // ... Other cases ...
+
+
+
+                    case 6:
+                        System.out.println("Exiting...");
+                        conn.close();
+                        System.exit(0);
+                        break;
+
+                    default:
+                        System.out.println("Invalid choice.");
+                        break;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}

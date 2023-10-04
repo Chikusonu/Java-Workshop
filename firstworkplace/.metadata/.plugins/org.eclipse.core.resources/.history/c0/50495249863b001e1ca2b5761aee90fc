@@ -1,0 +1,57 @@
+package bank_system_case_study;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.Scanner;
+
+public class customer {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+try {
+	Connection conn = DriverManager.getConnection("jdbc:mysql://localhost/bank_system", "root", "root");
+    Scanner sc = new Scanner(System.in);
+while (true) {
+	 System.out.println("Administration Login");
+     System.out.println("1. Despoite  ");
+     System.out.println("2. Display Customer Details");
+     System.out.println("3. Update Customer Details");
+     System.out.println("4. Balance Customer Details");
+     System.out.println("5. Delete Customer Details");
+     System.out.println("6. Exit");
+     System.out.println("Enter the Choice");
+     int choice = sc.nextInt();
+     int accno; // Declare accno once
+     String accname; // Declare accname once
+     double accbalance;
+     int rowsAffectedUpdate = 0; // Initialize here
+     switch(choice) {
+     case 1:
+    	 System.out.println("---***Customer Deposite Panel***---");
+    	 System.out.println("Enter the Account Number");
+    	 accno=sc.nextInt();
+    	 String depositeQuery = "SELECT * FROM banksystem WHERE  acc_no = ?";
+         PreparedStatement depositeStmt = conn.prepareStatement(depositeQuery);
+         depositeStmt.setInt(1, accno);
+         ResultSet resultSet = depositeStmt.executeQuery();
+
+         while (resultSet.next()) {
+            
+             String account_name = resultSet.getString("acc_name");
+           
+             System.out.println("Hello " + account_name+" Enter the Deposite Amount");
+            
+         }
+    	 break;
+     }
+}
+	
+	}
+catch (Exception e) {
+	// TODO: handle exception
+}
+
+}
+}

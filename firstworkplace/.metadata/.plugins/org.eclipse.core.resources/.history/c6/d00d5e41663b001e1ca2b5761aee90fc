@@ -1,0 +1,69 @@
+package bank_system_case_study;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.Scanner;
+
+public class BankSystem {
+
+    public static void main(String[] args) {
+        try {
+            // Establish a connection to the database
+            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost/bank_system", "root", "root");
+
+            Scanner sc = new Scanner(System.in);
+            
+            System.out.println("Administration Login");
+            System.out.println("Create Customer ");
+            System.out.println("Display Customer Details");
+            System.out.println("Enter the Choice");
+            int choice=sc.nextInt();
+            switch (choice) {
+			case 1:
+				
+				 System.out.println("Enter the Choice");
+				  int accno = sc.nextInt();
+		            String accname = sc.next();
+		            double accbalance = sc.nextDouble();
+
+		            String insertQuery = "INSERT INTO banksystem (acc_no, acc_name, acc_balance) VALUES (?, ?, ?)";
+		            PreparedStatement pstmt = conn.prepareStatement(insertQuery);
+		            pstmt.setInt(1, accno);
+		            pstmt.setString(2, accname);
+		            pstmt.setDouble(3, accbalance);
+
+		            int rowsAffected = pstmt.executeUpdate();
+
+		            if (rowsAffected > 0) {
+		                System.out.println("Data inserted successfully!");
+		            } else {
+		                System.out.println("Data insertion failed.");
+		            }
+				break;
+				
+				
+case 2:
+				
+				break;
+case 3:
+	
+	break;
+case 4:
+	
+	break;
+
+			default:
+				break;
+			}
+           
+            
+
+            // Close the connection
+            conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+}

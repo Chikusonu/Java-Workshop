@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring accessors="true" comment="Delete element from project &apos;threadSyncro&apos;&#x0D;&#x0A;- Original project: &apos;threadSyncro&apos;&#x0D;&#x0A;- Original element: &apos;threadSyncro.Tester.java&apos;" description="Delete element" element1="/src&lt;threadSyncro{Tester.java" elements="1" flags="589830" id="org.eclipse.jdt.ui.delete" resources="0" stamp="1691492426037" subPackages="false" version="1.0"/>
+</session>

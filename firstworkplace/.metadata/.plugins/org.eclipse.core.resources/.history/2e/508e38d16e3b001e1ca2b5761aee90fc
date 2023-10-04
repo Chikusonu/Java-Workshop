@@ -1,0 +1,93 @@
+package bank_system_case_study;
+import java.sql.ResultSet;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.Scanner;
+
+public class BankSystem {
+
+    public static void main(String[] args) {
+        try {
+            // Establish a connection to the database
+            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost/bank_system", "root", "root");
+
+            Scanner sc = new Scanner(System.in);
+            
+            System.out.println("Administration Login");
+            System.out.println("Create Customer ");
+            System.out.println("Display Customer Details");
+            System.out.println("Enter the Choice");
+            int choice=sc.nextInt();
+            switch (choice) {
+			case 1:{
+				  System.out.println("---***Create Customer Account Pannel***---");
+				 System.out.println("Enter Customer Details");
+				  int accno = sc.nextInt();
+		            String accname = sc.next();
+		            double accbalance = sc.nextDouble();
+
+		            String insertQuery = "INSERT INTO banksystem (acc_no, acc_name, acc_balance) VALUES (?, ?, ?)";
+		            PreparedStatement pstmt = conn.prepareStatement(insertQuery);
+		            pstmt.setInt(1, accno);
+		            pstmt.setString(2, accname);
+		            pstmt.setDouble(3, accbalance);
+
+		            int rowsAffected = pstmt.executeUpdate();
+
+		            if (rowsAffected > 0) {
+		                System.out.println("Data inserted successfully!");
+		            } else {
+		                System.out.println("Data insertion failed.");
+		            }
+			}
+				break;
+				
+				
+			case 2: {
+			    System.out.println("---***Display Customer Display Pannel***---");
+			    System.out.println("Enter the Customer Account Number");
+			    int accno = sc.nextInt();
+			    String accname = sc.next();
+
+			    String searchQuery = "SELECT * FROM banksystem WHERE acc_name = ? OR acc_no = ?";
+			    PreparedStatement searchStmt = conn.prepareStatement(searchQuery);
+			    searchStmt.setString(1, accname); // Use accname instead of searchString
+			    searchStmt.setInt(2, accno);      // Use accno instead of searchInt
+
+			    ResultSet resultSet = searchStmt.executeQuery();
+
+			    while (resultSet.next()) {
+			        int acc_no = resultSet.getInt("acc_no");
+			        String acc_name = resultSet.getString("acc_name");
+			        double acc_balance = resultSet.getDouble("acc_balance");
+
+			        System.out.println("Account Number: " + acc_no);
+			        System.out.println("Account Name: " + acc_name);
+			        System.out.println("Account Balance: " + acc_balance);
+			    }
+			}
+			break;
+
+case 3:
+	
+	break;
+case 4:
+	
+	break;
+
+			default:
+				break;
+			}
+           
+            
+
+            // Close the connection
+            conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+}

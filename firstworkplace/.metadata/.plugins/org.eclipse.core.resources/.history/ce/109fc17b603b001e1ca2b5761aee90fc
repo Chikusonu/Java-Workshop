@@ -1,0 +1,10 @@
+package bank_system_case_study;
+
+public class BankSystem {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+	}
+
+}

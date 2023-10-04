@@ -1,0 +1,107 @@
+package bank_system_case_study;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Scanner;
+
+public class BankSystem {
+
+    public static void main(String[] args) {
+        try {
+            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost/bank_system", "root", "root");
+
+            Scanner sc = new Scanner(System.in);
+            
+            System.out.println("Administration Login");
+            System.out.println("1. Create Customer ");
+            System.out.println("2. Display Customer Details");
+            System.out.println("3. Update Customer Details");
+            System.out.println("Enter the Choice");
+            int choice = sc.nextInt();
+
+            int accno; // Declare accno once
+            String accname; // Declare accname once
+
+            switch (choice) {
+                case 1:
+                    // Create Customer Account Panel
+                    System.out.println("---***Create Customer Account Panel***---");
+                    System.out.println("Enter Customer Details");
+                    accno = sc.nextInt();
+                    accname = sc.next();
+                    double accbalance = sc.nextDouble();
+
+                    String insertQuery = "INSERT INTO banksystem (acc_no, acc_name, acc_balance) VALUES (?, ?, ?)";
+                    PreparedStatement pstmt = conn.prepareStatement(insertQuery);
+                    pstmt.setInt(1, accno);
+                    pstmt.setString(2, accname);
+                    pstmt.setDouble(3, accbalance);
+
+                    int rowsAffected = pstmt.executeUpdate();
+
+                    if (rowsAffected > 0) {
+                        System.out.println("Data inserted successfully!");
+                    } else {
+                        System.out.println("Data insertion failed.");
+                    }
+                    break;
+
+                case 2:
+                    // Display Customer Display Panel
+                    System.out.println("---***Display Customer Display Panel***---");
+                    System.out.println("Enter the Customer Account Number");
+                    accno = sc.nextInt();
+                    accname = sc.next();
+
+                    String searchQuery = "SELECT * FROM banksystem WHERE acc_name = ? OR acc_no = ?";
+                    PreparedStatement searchStmt = conn.prepareStatement(searchQuery);
+                    searchStmt.setString(1, accname);
+                    searchStmt.setInt(2, accno);
+
+                    ResultSet resultSet = searchStmt.executeQuery();
+
+                    while (resultSet.next()) {
+                        int acc_no = resultSet.getInt("acc_no");
+                        String acc_name = resultSet.getString("acc_name");
+                        double acc_balance = resultSet.getDouble("acc_balance");
+
+                        System.out.println("Account Number: " + acc_no);
+                        System.out.println("Account Name: " + acc_name);
+                        System.out.println("Account Balance: " + acc_balance);
+                    }
+                    break;
+
+                case 3:
+                    // Update Customer Details
+                    System.out.println("---*** Update Customer Details ***---");
+                    System.out.println("Enter The Account Number");
+                    accno = sc.nextInt();
+                    System.out.println("Enter The Customer Account holder Name For Updation");
+                    accname = sc.next();
+                    String updateQuery = "UPDATE banksystem SET acc_name = ? WHERE acc_no = ?";
+                    PreparedStatement pstmtUpdate = conn.prepareStatement(updateQuery);
+                    pstmtUpdate.setString(1, accname);
+                    pstmtUpdate.setInt(2, accno);
+                    int rowsAffectedUpdate = pstmtUpdate.executeUpdate();
+
+                    if (rowsAffectedUpdate > 0) {
+                        System.out.println("Data Update successfully!");
+                    } else {
+                        System.out.println("Data Update failed.");
+                    }
+                    break;
+
+                default:
+                    System.out.println("Invalid choice.");
+                    break;
+            }
+
+            conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+}

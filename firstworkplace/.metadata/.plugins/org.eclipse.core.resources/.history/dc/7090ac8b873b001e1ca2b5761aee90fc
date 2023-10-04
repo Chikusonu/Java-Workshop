@@ -1,0 +1,112 @@
+package bank_system_case_study;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.Scanner;
+
+public class customer {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+try {
+	Connection conn = DriverManager.getConnection("jdbc:mysql://localhost/bank_system", "root", "root");
+    Scanner sc = new Scanner(System.in);
+while (true) {
+	 System.out.println("Administration Login");
+     System.out.println("1. Despoite  ");
+     System.out.println("2. Withdraw");
+     System.out.println("3. Update Customer Details");
+     System.out.println("4. Balance Customer Details");
+     System.out.println("5. Delete Customer Details");
+     System.out.println("6. Exit");
+     System.out.println("Enter the Choice");
+     int choice = sc.nextInt();
+     int accno; // Declare accno once
+     String accname; // Declare accname once
+     double accbalance;
+     double accdepo;
+     String nameQuery;
+     ResultSet resultSet;
+     double account_balance=0;
+     int rowsAffectedUpdate = 0; // Initialize here
+   
+     switch(choice) {
+     case 1:
+    	 System.out.println("---***Customer Deposite Panel***---");
+    	 System.out.println("Enter the Account Number");
+    	 accno=sc.nextInt();
+    	 nameQuery = "SELECT * FROM banksystem WHERE  acc_no = ?";
+         PreparedStatement nameStmt = conn.prepareStatement(nameQuery);
+         nameStmt.setInt(1, accno);
+         resultSet = nameStmt.executeQuery();
+
+         while (resultSet.next()) {
+            
+             String account_name = resultSet.getString("acc_name");
+              account_balance = resultSet.getDouble("acc_balance");
+           
+             System.out.println("Hello " + account_name+" Enter the Deposite Amount");
+            
+         }
+         
+         accdepo=sc.nextDouble();
+         accdepo+=account_balance;
+         
+         String despoiteQuery="UPDATE banksystem set acc_balance=? where acc_no=?";
+         PreparedStatement depositeStmt = conn.prepareStatement(despoiteQuery);
+         depositeStmt.setDouble(1, accdepo);
+         depositeStmt.setInt(2, accno);
+           rowsAffectedUpdate = depositeStmt.executeUpdate();
+
+         if (rowsAffectedUpdate > 0) {
+             System.out.println("Deposited successfully! Rows affected: " + rowsAffectedUpdate);
+         } else {
+             System.out.println("Deposite failed. Rows affected: " + rowsAffectedUpdate);
+         }
+         break;
+         
+     case 2:
+    	 System.out.println("---***Customer Deposite Panel***---");
+    	 System.out.println("Enter the Account Number");
+    	 accno=sc.nextInt();
+    	  nameQuery = "SELECT * FROM banksystem WHERE  acc_no = ?";
+         PreparedStatement nameStmt1 = conn.prepareStatement(nameQuery);
+         nameStmt1.setInt(1, accno);
+         resultSet = nameStmt.executeQuery();
+
+         while (resultSet.next()) {
+            
+             String account_name = resultSet.getString("acc_name");
+              account_balance = resultSet.getDouble("acc_balance");
+           
+             System.out.println("Hello " + account_name+" Enter the Deposite Amount");
+            
+         }
+         
+         accdepo=sc.nextDouble();
+         accdepo+=account_balance;
+         
+         String WithdrawQuery="UPDATE banksystem set acc_balance=? where acc_no=?";
+         PreparedStatement WithdrawStmt = conn.prepareStatement(WithdrawQuery);
+         WithdrawStmt.setDouble(1, accdepo);
+         depositeStmt.setInt(2, accno);
+           rowsAffectedUpdate = depositeStmt.executeUpdate();
+
+         if (rowsAffectedUpdate > 0) {
+             System.out.println("Withdraw successfully! Rows affected: " + rowsAffectedUpdate);
+         } else {
+             System.out.println("Withdraw failed. Rows affected: " + rowsAffectedUpdate);
+         }
+         break;
+     }
+}
+	
+	}
+catch (Exception e) {
+	// TODO: handle exception
+}
+
+}
+}
